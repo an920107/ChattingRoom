@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name_text">ChattingRoom</string>
+    <string name="host_text">Host</string>
+    <string name="connect_text">Connect</string>
+    <string name="port_text">Port</string>
+    <string name="name_text">Name</string>
+    <string name="message_text">Message</string>
+    <string name="send_text">Send</string>
+    <string name="create_server_text">Create Server</string>
+    <string name="server_setting_text">Server Setting</string>
+    <string name="client_setting_text">Client Setting</string>
+    <string name="room_name_text">Room Name</string>
+</resources>
