@@ -58,6 +58,7 @@ public class ChatServerActivity extends AppCompatActivity {
             }
         });
         new Thread(socket).start();
+        updateTitle(String.format("%s [%s]", room, socket.getLocalIp()));
     }
 
     @Override
@@ -67,6 +68,10 @@ public class ChatServerActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateTitle(String title) {
+        actionBar.setTitle(title);
     }
 
     private void updateMessage(JSONObject jsonObject) {

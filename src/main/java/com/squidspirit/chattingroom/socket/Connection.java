@@ -56,7 +56,7 @@ public class Connection implements Runnable {
     }
 
     protected void send(JSONObject jsonObject) {
-        if (socket.isClosed())
+        if (!socket.isConnected() || socket.isClosed())
             return;
         Thread thread = new Thread(() -> {
             try {

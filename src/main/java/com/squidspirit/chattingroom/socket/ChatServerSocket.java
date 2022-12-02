@@ -6,9 +6,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ChatServerSocket implements Runnable{
 
@@ -89,6 +96,7 @@ public class ChatServerSocket implements Runnable{
                                     sender, true, String.format("%s has left.", sender));
                             sendAll(toSend);
                             listener.onReceived(toSend);
+                            connections.remove(connection);
                         } catch (JSONException exception) {
                             listener.onFailed(exception);
                         }
@@ -97,6 +105,7 @@ public class ChatServerSocket implements Runnable{
                     @Override
                     public void onFailed(Exception exception) {
                         listener.onFailed(exception);
+                        connections.remove(connection);
                     }
                 });
                 new Thread(connection).start();
@@ -129,5 +138,26 @@ public class ChatServerSocket implements Runnable{
         } catch (IOException exception) {
             listener.onFailed(exception);
         }
+    }
+
+    public String getLocalIp() {
+        try {
+            Enumeration<NetworkInterface> networkEnumeration = NetworkInterface.getNetworkInterfaces();
+            while (networkEnumeration.hasMoreElements()) {
+                NetworkInterface network = networkEnumeration.nextElement();
+                Enumeration<InetAddress> ipEnumeration = network.getInetAddresses();
+                while (ipEnumeration.hasMoreElements()) {
+                    InetAddress inetAddress = ipEnumeration.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
+                        String ip = inetAddress.getHostAddress();
+                        if (ip != null && ip.split("\\.").length == 4)
+                            return ip;
+                    }
+                }
+            }
+        } catch (SocketException exception) {
+            listener.onFailed(exception);
+        }
+        return null;
     }
 }
